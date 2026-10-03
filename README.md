@@ -18,6 +18,12 @@ npm run dev
 | Guest, QR code on a table (menu and ordering) | `/#/table/7` |
 | Staff panel (PIN) | `/#/staff` |
 
+## Example data
+
+The demo opens with the name and a selection of the public menu of the restaurant Sandyq, Almaty
+(sandyq.kz, menu dated 30 January 2026). It is example data for the hackathon; the project is not
+affiliated with the restaurant, and the 3D floor is an invented layout, not the restaurant's real plan.
+
 ## Good to know
 
 - There is no server. Tables, guests, the menu and orders live in the visitor's browser,

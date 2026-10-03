@@ -58,6 +58,7 @@ export default function Menu({ qrTable }: { qrTable?: number }) {
             </div>
           )}
         </div>
+        <p className="mt-8 text-center text-xs text-stone-400">{t('Hackathon demo. Not an official restaurant website.')}</p>
       </div>
     </div>
   )

@@ -1,4 +1,5 @@
 import type { Lang } from './i18n'
+import { demoMenu } from './demoMenu'
 import { createLocalStore } from './local'
 
 /**
@@ -18,8 +19,11 @@ export function formatPrice(price: number, lang: Lang) {
   return `${new Intl.NumberFormat(lang === 'en' ? 'en-US' : 'ru-RU').format(price)} ₸`
 }
 
-/** Starts empty: the list is filled from the uploaded menu, not from sample dishes. */
-const items = createLocalStore<MenuItem[]>('sse.menu-items', () => [])
+/**
+ * A browser that has never opened the site starts with the example menu, so the demo is ready at once.
+ * After that the list is whatever the staff make of it: uploaded, edited or cleared.
+ */
+const items = createLocalStore<MenuItem[]>('sse.menu-items', demoMenu)
 
 export const useItems = items.use
 export const saveItems = items.set

@@ -333,6 +333,11 @@ export const ru: Dictionary = {
   'Number of floors': 'Количество этажей',
   'Floors open to guests': 'Этажи, открытые для гостей',
   'Floors: {n}': 'Этажей: {n}',
+
+  // Example data
+  'Load the example menu': 'Загрузить пример меню',
+  'Example data from a public menu, for demonstration only.': 'Пример из открытого меню, только для демонстрации.',
+  'Hackathon demo. Not an official restaurant website.': 'Демо для хакатона. Не является официальным сайтом ресторана.',
 }
 
 export const kk: Dictionary = {
@@ -664,4 +669,9 @@ export const kk: Dictionary = {
   'Number of floors': 'Қабаттар саны',
   'Floors open to guests': 'Қонақтарға ашық қабаттар',
   'Floors: {n}': 'Қабат: {n}',
+
+  // Example data
+  'Load the example menu': 'Мәзір үлгісін жүктеу',
+  'Example data from a public menu, for demonstration only.': 'Ашық мәзірден алынған үлгі, тек көрсету үшін.',
+  'Hackathon demo. Not an official restaurant website.': 'Хакатонға арналған демо. Мейрамхананың ресми сайты емес.',
 }

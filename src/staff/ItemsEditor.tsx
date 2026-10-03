@@ -1,4 +1,5 @@
 import { Eraser, Plus, Trash2 } from 'lucide-react'
+import { DEMO_RESTAURANT, DEMO_SOURCE, demoMenu } from '../lib/demoMenu'
 import { useLang } from '../lib/i18n'
 import { useImportState } from '../lib/menuImport'
 import { newItem, saveItems, sections, useItems, type MenuItem } from '../lib/orders'
@@ -57,11 +58,23 @@ export function ItemsEditor() {
         </p>
       ) : null}
 
+      {items.some((x) => x.id.startsWith('demo-')) && (
+        <p className="mt-3 text-xs text-stone-400">
+          {t('Example data from a public menu, for demonstration only.')} {DEMO_SOURCE}
+        </p>
+      )}
+
       {items.length === 0 ? (
         !state.running && (
-          <p className="mt-4 rounded-xl border border-dashed border-stone-300 px-4 py-8 text-center text-sm text-stone-500">
+          <div className="mt-4 rounded-xl border border-dashed border-stone-300 px-4 py-8 text-center text-sm text-stone-500">
             {t('Upload your menu above and its dishes will appear here.')}
-          </p>
+            <button
+              className="mt-2 block w-full font-medium text-ink underline decoration-stone-300 underline-offset-4 transition hover:decoration-ink"
+              onClick={() => saveItems(demoMenu())}
+            >
+              {t('Load the example menu')} ({DEMO_RESTAURANT})
+            </button>
+          </div>
         )
       ) : (
         <div className="mt-4 space-y-2">

@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { INITIAL_GUESTS, INITIAL_TABLES, SLOTS } from './data'
+import { DEMO_RESTAURANT } from './demoMenu'
 import { createLocalStore } from './local'
 import { guestMatch } from './matching'
 import { clearOrders } from './orders'
@@ -19,7 +20,10 @@ export interface Profile {
   floors: number
 }
 
-const profileStore = createLocalStore<Profile>('sse.restaurant', () => ({ name: 'Maison Lumière', area: 0, floors: 1 }))
+const profileStore = createLocalStore<Profile>('sse.restaurant', () => ({ name: DEMO_RESTAURANT, area: 0, floors: 1 }))
+
+// The placeholder name of earlier versions gives way to the example restaurant.
+if (profileStore.get().name === 'Maison Lumière') profileStore.set({ ...profileStore.get(), name: DEMO_RESTAURANT })
 
 const INITIAL: State = {
   tables: INITIAL_TABLES,
