@@ -8,7 +8,8 @@ import { AddModelModal } from './AddModelModal'
 
 export function SettingsTab({ onModel }: { onModel: () => void }) {
   const store = useStore()
-  const { modelReady, restaurantName } = store
+  const { modelReady, profile } = store
+  const whole = (text: string, max: number) => Math.max(0, Math.min(max, Math.round(Number(text)) || 0))
   const stats = useStats()
   const { t } = useLang()
   const [adding, setAdding] = useState(false)
@@ -24,7 +25,42 @@ export function SettingsTab({ onModel }: { onModel: () => void }) {
               <span className="block text-sm font-medium">{t('Restaurant name')}</span>
               <span className="block text-sm text-stone-500">{t('Shown to guests and staff')}</span>
             </span>
-            <input className="input max-w-[240px]" value={restaurantName} onChange={(e) => store.setRestaurantName(e.target.value)} />
+            <input className="input max-w-[240px]" value={profile.name} onChange={(e) => store.setProfile({ name: e.target.value })} />
+          </label>
+
+          <label className="flex items-center justify-between gap-6 py-5">
+            <span>
+              <span className="block text-sm font-medium">{t('Restaurant area')}</span>
+              <span className="block text-sm text-stone-500">{t('Total floor area of the venue')}</span>
+            </span>
+            <span className="relative">
+              <input
+                className="input w-36 pr-10 text-right tabular-nums"
+                type="number"
+                min={0}
+                max={100000}
+                placeholder="0"
+                value={profile.area || ''}
+                onChange={(e) => store.setProfile({ area: whole(e.target.value, 100000) })}
+              />
+              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-stone-400">{t('m²')}</span>
+            </span>
+          </label>
+
+          <label className="flex items-center justify-between gap-6 py-5">
+            <span>
+              <span className="block text-sm font-medium">{t('Number of floors')}</span>
+              <span className="block text-sm text-stone-500">{t('Floors open to guests')}</span>
+            </span>
+            <input
+              className="input w-36 text-right tabular-nums"
+              type="number"
+              min={1}
+              max={20}
+              value={profile.floors || ''}
+              onChange={(e) => store.setProfile({ floors: whole(e.target.value, 20) })}
+              onBlur={() => profile.floors < 1 && store.setProfile({ floors: 1 })}
+            />
           </label>
 
           <div className="flex items-center justify-between gap-6 py-5">

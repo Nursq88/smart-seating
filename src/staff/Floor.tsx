@@ -28,7 +28,7 @@ function Metric({ label, value, hint }: { label: string; value: string; hint: st
  * Right: the brief for the selected guest or table, or tonight's numbers when nothing is selected.
  */
 export function Floor({ focusTable, onOrders }: { focusTable: number | null; onOrders: () => void }) {
-  const { tables, guests, modelReady, restaurantName, selectedGuestId, selectGuest, seatGuest, clearTable } = useStore()
+  const { tables, guests, modelReady, restaurantName, profile, selectedGuestId, selectGuest, seatGuest, clearTable } = useStore()
   const stats = useStats()
   const { t } = useLang()
   const [tableSel, setTableSel] = useState<number | null>(focusTable)
@@ -89,6 +89,11 @@ export function Floor({ focusTable, onOrders }: { focusTable: number | null; onO
         <p className="mt-1 text-sm text-stone-500">
           {t('{a} free · {b} occupied · {c} reserved', { a: stats.available, b: stats.occupied, c: stats.reserved })}
         </p>
+        {(profile.area > 0 || profile.floors > 1) && (
+          <p className="mt-0.5 text-sm text-stone-400">
+            {[profile.area > 0 && `${profile.area} ${t('m²')}`, t('Floors: {n}', { n: profile.floors })].filter(Boolean).join(' · ')}
+          </p>
+        )}
 
         <div className="label mt-7">
           {t('Arriving')} · {arriving.length}

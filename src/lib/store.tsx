@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { INITIAL_GUESTS, INITIAL_TABLES, SLOTS } from './data'
+import { createLocalStore } from './local'
 import { guestMatch } from './matching'
 import { clearOrders } from './orders'
 import type { Decor, Guest, Purpose, Route, Table } from './types'
@@ -8,14 +9,22 @@ interface State {
   tables: Table[]
   guests: Guest[]
   modelReady: boolean
-  restaurantName: string
 }
+
+/** What the manager tells us about the venue. Kept in the browser so it survives a reload. */
+export interface Profile {
+  name: string
+  /** Floor area in square metres; 0 when not filled in */
+  area: number
+  floors: number
+}
+
+const profileStore = createLocalStore<Profile>('sse.restaurant', () => ({ name: 'Maison Lumière', area: 0, floors: 1 }))
 
 const INITIAL: State = {
   tables: INITIAL_TABLES,
   guests: INITIAL_GUESTS,
   modelReady: true,
-  restaurantName: 'Maison Lumière',
 }
 
 export const MIN_TABLES = 12
@@ -52,7 +61,9 @@ interface Store extends State {
   removeTable: (id: number) => void
   setTableCount: (count: number) => void
   setModelReady: (ready: boolean) => void
-  setRestaurantName: (name: string) => void
+  restaurantName: string
+  profile: Profile
+  setProfile: (patch: Partial<Profile>) => void
   reset: () => void
 }
 
@@ -89,6 +100,9 @@ const Ctx = createContext<Store | null>(null)
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>(INITIAL)
   const [address, setAddress] = useState(readAddress)
+  // Profiles saved before area and floors existed only have a name.
+  const saved = profileStore.use()
+  const profile = useMemo<Profile>(() => ({ ...saved, area: saved.area ?? 0, floors: saved.floors ?? 1 }), [saved])
   const { route, qrTable } = address
 
   useEffect(() => {
@@ -218,7 +232,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       removeTable,
       setTableCount,
       setModelReady: (modelReady) => setState((s) => ({ ...s, modelReady })),
-      setRestaurantName: (restaurantName) => setState((s) => ({ ...s, restaurantName })),
+      restaurantName: profile.name,
+      profile,
+      setProfile: (patch) => profileStore.set({ ...profile, ...patch }),
       reset: () => {
         setState(INITIAL)
         selectGuest(null)
@@ -226,7 +242,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         clearOrders()
       },
     }),
-    [state, route, go, qrTable, selectedGuestId, guestTableId, addGuest, seatGuest, clearTable, addTable, updateTable, removeTable, setTableCount],
+    [state, profile, route, go, qrTable, selectedGuestId, guestTableId, addGuest, seatGuest, clearTable, addTable, updateTable, removeTable, setTableCount],
   )
 
   return <Ctx.Provider value={store}>{children}</Ctx.Provider>

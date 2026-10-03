@@ -325,6 +325,14 @@ export const ru: Dictionary = {
   'QR code for the table': 'QR-код для стола',
   'Guests scan it and order without a waiter.': 'Гости сканируют его и заказывают без официанта.',
   'Download': 'Скачать',
+
+  // Venue details
+  'Restaurant area': 'Площадь ресторана',
+  'Total floor area of the venue': 'Общая площадь заведения',
+  'm²': 'м²',
+  'Number of floors': 'Количество этажей',
+  'Floors open to guests': 'Этажи, открытые для гостей',
+  'Floors: {n}': 'Этажей: {n}',
 }
 
 export const kk: Dictionary = {
@@ -648,4 +656,12 @@ export const kk: Dictionary = {
   'QR code for the table': 'Үстелге арналған QR код',
   'Guests scan it and order without a waiter.': 'Қонақтар оны сканерлеп, даяшысыз тапсырыс береді.',
   'Download': 'Жүктеп алу',
+
+  // Venue details
+  'Restaurant area': 'Мейрамхана ауданы',
+  'Total floor area of the venue': 'Мекеменің жалпы ауданы',
+  'm²': 'м²',
+  'Number of floors': 'Қабаттар саны',
+  'Floors open to guests': 'Қонақтарға ашық қабаттар',
+  'Floors: {n}': 'Қабат: {n}',
 }
