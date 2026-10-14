@@ -59,7 +59,7 @@ export function ItemsEditor() {
       ) : null}
 
       {items.some((x) => x.id.startsWith('demo-')) && (
-        <p className="mt-3 text-xs text-stone-400">
+        <p className="mt-3 text-xs text-stone-500">
           {t('Example data from a public menu, for demonstration only.')} {DEMO_SOURCE}
         </p>
       )}
@@ -109,12 +109,12 @@ export function ItemsEditor() {
                   value={item.price || ''}
                   onChange={(e) => update(item.id, { price: Math.max(0, Math.round(Number(e.target.value))) })}
                 />
-                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-stone-400">₸</span>
+                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-stone-500">₸</span>
               </div>
               <button
                 aria-label={t('Delete')}
                 onClick={() => saveItems(items.filter((x) => x.id !== item.id))}
-                className="rounded-md p-2 text-stone-400 transition hover:bg-stone-100 hover:text-ink"
+                className="rounded-md p-2 text-stone-500 transition hover:bg-stone-100 hover:text-ink"
               >
                 <Trash2 size={15} strokeWidth={1.75} />
               </button>

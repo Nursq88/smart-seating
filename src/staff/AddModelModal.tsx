@@ -97,7 +97,7 @@ export function AddModelModal({ onClose, onReady }: { onClose: () => void; onRea
                     </div>
                   )}
                   <button
-                    aria-label={`Remove ${photo.name}`}
+                    aria-label={t('Remove {name}', { name: photo.name })}
                     onClick={() => setPhotos((p) => p.filter((x) => x.id !== photo.id))}
                     className="absolute right-1 top-1 rounded-full bg-white/90 p-0.5 text-stone-600 opacity-0 shadow-sm transition group-hover:opacity-100"
                   >
@@ -157,7 +157,7 @@ export function AddModelModal({ onClose, onReady }: { onClose: () => void; onRea
           <div className="mt-7 h-1 w-64 overflow-hidden rounded-full bg-stone-100">
             <div className="h-full rounded-full bg-ink transition-[width] duration-100" style={{ width: `${progress * 100}%` }} />
           </div>
-          <p className="mt-3 text-xs text-stone-400">
+          <p className="mt-3 text-xs text-stone-500">
             {t('Photos: {n} · Tables: {m}', { n: photos.length, m: clamped })}
           </p>
         </div>

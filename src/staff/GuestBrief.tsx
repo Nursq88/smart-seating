@@ -2,6 +2,7 @@ import { AlertTriangle, Check, Sparkles } from 'lucide-react'
 import { Button, Row } from '../components/ui'
 import { EXTRAS, FLOWERS, paletteLabel } from '../lib/decor'
 import { useLang } from '../lib/i18n'
+import { endTime, formatDate } from '../lib/visit'
 import { LEVEL, PURPOSE_LABEL, SPACING, unmet } from '../lib/matching'
 import type { Guest, GuestStatus, Match, Table } from '../lib/types'
 
@@ -30,7 +31,7 @@ export function GuestBrief({
   onPick: (id: number) => void
   onSeat: () => void
 }) {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const { p, extras } = preferences(guest)
   const { decor } = guest
   const decorItems = decor
@@ -48,8 +49,9 @@ export function GuestBrief({
       <div className="label">{t('Guest #{n}', { n: guest.id })}</div>
       <div className="mt-1 flex items-baseline justify-between gap-3">
         <h2 className="font-serif text-4xl leading-tight">{guest.name}</h2>
-        <span className="text-sm text-stone-400">
-          {t('Guests: {n}', { n: p.party })} · {guest.time}
+        <span className="text-sm text-stone-500">
+          {t('Guests: {n}', { n: p.party })} · {guest.date && `${formatDate(guest.date, lang)}, `}
+          {guest.duration ? `${guest.time}–${endTime({ date: guest.date ?? '', time: guest.time, duration: guest.duration })}` : guest.time}
         </span>
       </div>
 
@@ -119,7 +121,7 @@ export function GuestBrief({
           <>
             <div className="mt-1.5 flex items-baseline justify-between">
               <span className="text-[15px] font-medium">
-                {t('Table {n}', { n: table.id })} <span className="font-normal text-stone-400">· {t(table.zone)}</span>
+                {t('Table {n}', { n: table.id })} <span className="font-normal text-stone-500">· {t(table.zone)}</span>
               </span>
               {score !== null && <span className="text-sm font-semibold tabular-nums text-bronze-deep">{t('{n}% match', { n: score })}</span>}
             </div>

@@ -1,3 +1,4 @@
+import type { Lang } from './i18n'
 import type { MenuItem } from './orders'
 
 /**
@@ -97,6 +98,27 @@ const MENU: [string, [string, number][]][] = [
     ['«Хан сырбаз» — опалённое мясо барашка', 95990],
   ]],
 ]
+
+/**
+ * Section headings of the example menu in the other interface languages. Dish names stay as the
+ * restaurant prints them; sections the staff type in themselves are shown as typed.
+ */
+const SECTION_LABEL: Record<string, Partial<Record<Lang, string>>> = {
+  'Салаты': { en: 'Salads', kk: 'Салаттар' },
+  'Деликатесы': { en: 'Delicacies', kk: 'Деликатестер' },
+  'Супы': { en: 'Soups', kk: 'Сорпалар' },
+  'Основные блюда': { en: 'Main courses', kk: 'Негізгі тағамдар' },
+  'Гарниры': { en: 'Side dishes', kk: 'Гарнирлер' },
+  'Выпечка': { en: 'Bakery', kk: 'Нан мен тоқаш' },
+  'Десерты': { en: 'Desserts', kk: 'Десерттер' },
+  'Авторский чай': { en: 'Signature tea', kk: 'Авторлық шай' },
+  'Напитки': { en: 'Drinks', kk: 'Сусындар' },
+  'Меню на компанию (5–6 персон)': { en: 'For a group (5–6 people)', kk: 'Топқа арналған мәзір (5–6 адам)' },
+}
+
+export function sectionLabel(section: string, lang: Lang) {
+  return SECTION_LABEL[section]?.[lang] ?? section
+}
 
 export function demoMenu(): MenuItem[] {
   return MENU.flatMap(([category, dishes], s) =>

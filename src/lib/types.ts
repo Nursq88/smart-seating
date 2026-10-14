@@ -43,7 +43,12 @@ export interface Guest {
   status: GuestStatus
   /** Table held for or occupied by the guest */
   tableId?: number
+  /** Arrival, HH:MM */
   time: string
+  /** Day of the visit, YYYY-MM-DD; demo guests are all tonight and leave it out */
+  date?: string
+  /** Planned length of the visit in minutes */
+  duration?: number
   allergy?: string
   note?: string
   decor?: Decor

@@ -16,8 +16,9 @@ export default {
           200: '#E7E3DA',
           300: '#D6D1C6',
           400: '#A9A398',
-          500: '#7C776E',
-          600: '#5B5751',
+          // Darker than the original greys so small captions keep a 4.5:1 contrast on white and milk.
+          500: '#69645C',
+          600: '#524E48',
         },
       },
       fontFamily: {

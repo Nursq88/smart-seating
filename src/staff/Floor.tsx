@@ -18,7 +18,7 @@ function Metric({ label, value, hint }: { label: string; value: string; hint: st
     <div className="rounded-xl border border-stone-200 bg-white px-4 py-3.5">
       <div className="text-xs text-stone-500">{label}</div>
       <div className="mt-1 font-serif text-4xl leading-none tabular-nums">{value}</div>
-      <div className="mt-1.5 text-xs text-stone-400">{hint}</div>
+      <div className="mt-1.5 text-xs text-stone-500">{hint}</div>
     </div>
   )
 }
@@ -90,7 +90,7 @@ export function Floor({ focusTable, onOrders }: { focusTable: number | null; onO
           {t('{a} free · {b} occupied · {c} reserved', { a: stats.available, b: stats.occupied, c: stats.reserved })}
         </p>
         {(profile.area > 0 || profile.floors > 1) && (
-          <p className="mt-0.5 text-sm text-stone-400">
+          <p className="mt-0.5 text-sm text-stone-500">
             {[profile.area > 0 && `${profile.area} ${t('m²')}`, t('Floors: {n}', { n: profile.floors })].filter(Boolean).join(' · ')}
           </p>
         )}
@@ -126,7 +126,7 @@ export function Floor({ focusTable, onOrders }: { focusTable: number | null; onO
                     {t(PURPOSE_LABEL[x.prefs.purpose])} · {x.prefs.party}
                   </span>
                 </span>
-                <span className="text-xs tabular-nums text-stone-400">{x.time}</span>
+                <span className="text-xs tabular-nums text-stone-500">{x.time}</span>
               </button>
             )
           })}
@@ -178,7 +178,7 @@ export function Floor({ focusTable, onOrders }: { focusTable: number | null; onO
                     {latest.lines.map((l) => `${l.qty}× ${l.name}`).join(', ')}
                   </span>
                 </span>
-                <ArrowRight size={15} className="shrink-0 text-stone-400" />
+                <ArrowRight size={15} className="shrink-0 text-stone-500" />
               </button>
             )}
           </RestaurantScene>
@@ -209,7 +209,7 @@ export function Floor({ focusTable, onOrders }: { focusTable: number | null; onO
             <button
               aria-label={t('Back')}
               onClick={() => pickGuest(null)}
-              className="absolute -right-2 -top-2 z-10 rounded-md p-1 text-stone-400 transition hover:bg-stone-100 hover:text-ink"
+              className="absolute -right-2 -top-2 z-10 rounded-md p-1 text-stone-500 transition hover:bg-stone-100 hover:text-ink"
             >
               <X size={16} />
             </button>
@@ -231,7 +231,7 @@ export function Floor({ focusTable, onOrders }: { focusTable: number | null; onO
             <button
               aria-label={t('Back')}
               onClick={() => setTableSel(null)}
-              className="absolute -right-2 -top-2 z-10 rounded-md p-1 text-stone-400 transition hover:bg-stone-100 hover:text-ink"
+              className="absolute -right-2 -top-2 z-10 rounded-md p-1 text-stone-500 transition hover:bg-stone-100 hover:text-ink"
             >
               <X size={16} />
             </button>

@@ -13,6 +13,12 @@ export interface MenuItem {
   name: string
   /** Price in tenge, whole units */
   price: number
+  /** What the dish is made of, as the restaurant describes it. Shown only when the restaurant provides it. */
+  description?: string
+  /** Portion size as printed, e.g. "250 g" */
+  portion?: string
+  /** Allergens declared by the restaurant */
+  allergens?: string[]
 }
 
 export function formatPrice(price: number, lang: Lang) {
@@ -84,7 +90,8 @@ const orders = createLocalStore<Order[]>('sse.orders', () => [])
 
 export const useOrders = orders.use
 
-export function placeOrder(tableId: number, lines: OrderLine[], note?: string) {
+/** Saves the order for the waiter's screen. Returns null when the browser refused to store it. */
+export function placeOrder(tableId: number, lines: OrderLine[], note?: string): Order | null {
   const now = new Date()
   const order: Order = {
     id: `order-${now.getTime().toString(36)}`,
@@ -96,8 +103,7 @@ export function placeOrder(tableId: number, lines: OrderLine[], note?: string) {
     time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
     createdAt: now.getTime(),
   }
-  orders.set([order, ...orders.get()])
-  return order
+  return orders.set([order, ...orders.get()]) ? order : null
 }
 
 export function setOrderStatus(id: string, status: OrderStatus) {

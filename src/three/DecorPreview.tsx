@@ -1,15 +1,19 @@
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import type { Decor, Purpose, Shape } from '../lib/types'
+import { useLang } from '../lib/i18n'
 import { TableModel, tableRadius } from './TableModel'
+import { WebGLGuard } from './WebGLGuard'
 
 /** Close-up of a single table so the guest can see roughly how it will be dressed. */
 export function DecorPreview({ decor, occasion, seats }: { decor?: Decor; occasion?: Purpose; seats: number }) {
+  const { t } = useLang()
   const shape: Shape = seats === 3 || seats === 4 || seats > 6 ? 'rect' : 'round'
   const table = { seats: Math.max(2, seats), shape }
   // Step back far enough to keep the banner and balloons in frame.
   const far = (tableRadius(table) + 1.5) / 2.3
   return (
+    <WebGLGuard hint={t('The list of chosen items and their prices is all you need.')}>
     <Canvas key={`${table.seats}-${shape}`} shadows dpr={[1, 2]} camera={{ position: [3.3 * far, 3.4 * far, 4.6 * far], fov: 34 }}>
       <ambientLight intensity={1.5} color="#FFF6EA" />
       <hemisphereLight args={['#FFFFFF', '#D9CFBF', 0.9]} />
@@ -41,5 +45,6 @@ export function DecorPreview({ decor, occasion, seats }: { decor?: Decor; occasi
         target={[0, 1.15, 0]}
       />
     </Canvas>
+    </WebGLGuard>
   )
 }

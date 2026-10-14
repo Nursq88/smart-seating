@@ -43,12 +43,12 @@ export function GuestsTab({ onOpen }: { onOpen: () => void }) {
                     >
                       <td className="px-5 py-3 tabular-nums text-stone-600">{x.time}</td>
                       <td className="px-5 py-3">
-                        <span className="font-medium">{x.name}</span> <span className="text-stone-400">#{x.id}</span>
+                        <span className="font-medium">{x.name}</span> <span className="text-stone-500">#{x.id}</span>
                       </td>
                       <td className="px-5 py-3 text-stone-600">{t(PURPOSE_LABEL[x.prefs.purpose])}</td>
                       <td className="px-5 py-3 text-stone-600">
                         <span className="inline-flex items-center gap-1.5">
-                          <Users size={13} strokeWidth={1.75} className="text-stone-400" />
+                          <Users size={13} strokeWidth={1.75} className="text-stone-500" />
                           {x.prefs.party}
                         </span>
                       </td>

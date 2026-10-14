@@ -43,7 +43,7 @@ export function SettingsTab({ onModel }: { onModel: () => void }) {
                 value={profile.area || ''}
                 onChange={(e) => store.setProfile({ area: whole(e.target.value, 100000) })}
               />
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-stone-400">{t('m²')}</span>
+              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-stone-500">{t('m²')}</span>
             </span>
           </label>
 
@@ -75,7 +75,7 @@ export function SettingsTab({ onModel }: { onModel: () => void }) {
             </span>
             <span className="flex gap-2">
               {modelReady && (
-                <Button variant="secondary" aria-label="Remove model" onClick={() => store.setModelReady(false)}>
+                <Button variant="secondary" aria-label={t('Remove model')} onClick={() => store.setModelReady(false)}>
                   <Trash2 size={15} strokeWidth={1.75} />
                 </Button>
               )}

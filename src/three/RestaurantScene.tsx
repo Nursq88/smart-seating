@@ -2,12 +2,13 @@ import { useEffect, useMemo, useRef, useState, type ElementRef, type ReactNode }
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Html, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
-import { RotateCcw } from 'lucide-react'
+import { Clock, RotateCcw, Star, Users, type LucideIcon } from 'lucide-react'
 import { useLang, type T } from '../lib/i18n'
 import { LEVEL, PURPOSE_LABEL } from '../lib/matching'
 import type { Decor, Purpose, Table } from '../lib/types'
 import { Room } from './Room'
 import { TableModel, tableRadius } from './TableModel'
+import { WebGLGuard } from './WebGLGuard'
 
 export type Tone = 'available' | 'occupied' | 'reserved' | 'recommended' | 'muted'
 
@@ -24,10 +25,13 @@ const BADGE: Record<Tone, string> = {
   occupied: 'bg-graphite text-white border-graphite',
   reserved: 'bg-[#EFE3CD] text-[#6B5330] border-sand',
   recommended: 'bg-bronze text-white border-bronze',
-  muted: 'bg-stone-100 text-stone-400 border-stone-200',
+  muted: 'bg-stone-100 text-stone-500 border-stone-200',
 }
 
-const STATUS_LABEL = { occupied: 'Occupied', reserved: 'Reserved' }
+/** Shapes next to the colours, so the status reads without telling colours apart. */
+export const TONE_ICON: Partial<Record<Tone, LucideIcon>> = { occupied: Users, reserved: Clock, recommended: Star }
+
+const STATUS_LABEL = { available: 'Available', occupied: 'Occupied', reserved: 'Reserved' }
 
 const CHAIR = '#A79E91'
 const CHAIR_MUTED = '#D3CFC7'
@@ -73,6 +77,7 @@ interface TableProps {
 function TableMesh({ table, tone, selected, hovered, label, decor, occasion, t, interactive, onHover, onSelect }: TableProps) {
   const radius = tableRadius(table)
   const ring = selected ? '#262523' : tone === 'recommended' ? TOP.recommended : null
+  const Icon = TONE_ICON[tone]
 
   return (
     <group position={[table.x, 0, table.z]}>
@@ -104,6 +109,7 @@ function TableMesh({ table, tone, selected, hovered, label, decor, occasion, t, 
             BADGE[tone]
           } ${selected ? 'scale-125' : ''}`}
         >
+          {Icon && <Icon size={10} strokeWidth={2.5} aria-hidden />}
           {table.id}
           {label && <span className="font-medium opacity-80">· {label}</span>}
         </div>
@@ -113,12 +119,10 @@ function TableMesh({ table, tone, selected, hovered, label, decor, occasion, t, 
         <Html position={[0, 2.1, 0]} center zIndexRange={[30, 21]} style={{ pointerEvents: 'none' }}>
           <div className="w-max -translate-y-6 animate-fade-in rounded-lg border border-stone-200 bg-white/95 px-3 py-2 text-xs shadow-lift backdrop-blur">
             <div className="font-semibold text-ink">{t('Table {n}', { n: table.id })}</div>
-            {table.status !== 'available' && (
-              <div className="font-medium text-bronze-deep">
-                {t(STATUS_LABEL[table.status])}
-                {occasion && ` · ${t(PURPOSE_LABEL[occasion])}`}
-              </div>
-            )}
+            <div className="font-medium text-bronze-deep">
+              {t(STATUS_LABEL[table.status])}
+              {table.status !== 'available' && occasion && ` · ${t(PURPOSE_LABEL[occasion])}`}
+            </div>
             <div className="mt-1 text-stone-500">
               {t('Privacy')}: {t(LEVEL[table.privacy])}
             </div>
@@ -209,8 +213,23 @@ export interface SceneProps {
   children?: ReactNode
 }
 
+/** Phones and tablets get touch gestures in the hint, computers get the mouse. */
+function useTouch() {
+  const [touch] = useState(() => typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches)
+  return touch
+}
+
+export function sceneHint(t: T, touch: boolean, selectable: boolean) {
+  const parts = touch
+    ? [t('Swipe to rotate'), t('Pinch to zoom')]
+    : [t('Drag to rotate'), t('Scroll to zoom')]
+  if (selectable) parts.push(t(touch ? 'Tap a table to select it' : 'Click a table to select it'))
+  return parts.join(' · ')
+}
+
 export function RestaurantScene({ tables, tone, selectedId, focusId, labels, decors, occasions, onSelect, children }: SceneProps) {
   const { t } = useLang()
+  const touch = useTouch()
   const [hovered, setHovered] = useState<number | null>(null)
   const [home, setHome] = useState(0)
   const focusTable = focusId != null ? tables.find((t) => t.id === focusId) : undefined
@@ -227,7 +246,12 @@ export function RestaurantScene({ tables, tone, selectedId, focusId, labels, dec
   }, [hovered, onSelect])
 
   return (
-    <div className="relative h-full w-full">
+    <div
+      className="relative h-full w-full"
+      role="region"
+      aria-label={t('3D floor plan. Tables can also be chosen from the list.')}
+    >
+      <WebGLGuard hint={t('Use the list of tables instead.')}>
       <Canvas
         shadows
         dpr={[1, 2]}
@@ -270,16 +294,17 @@ export function RestaurantScene({ tables, tone, selectedId, focusId, labels, dec
         ))}
         <CameraRig focus={focus} home={home} />
       </Canvas>
+      </WebGLGuard>
 
       <button
         onClick={() => setHome((n) => n + 1)}
-        className="absolute bottom-4 left-4 z-30 flex items-center gap-1.5 rounded-full border border-stone-200 bg-white/90 px-3 py-1.5 text-xs font-medium text-stone-600 shadow-soft backdrop-blur transition hover:text-ink"
+        className="absolute bottom-3 left-3 z-30 flex min-h-[36px] items-center gap-1.5 rounded-full border border-stone-200 bg-white/95 px-3 py-1.5 text-xs font-medium text-stone-600 shadow-soft backdrop-blur transition hover:text-ink"
       >
-        <RotateCcw size={13} strokeWidth={1.75} />
+        <RotateCcw size={13} strokeWidth={1.75} aria-hidden />
         {t('Reset view')}
       </button>
-      <div className="pointer-events-none absolute bottom-4 right-4 hidden text-xs text-stone-400 sm:block">
-        {t('Drag to rotate · Scroll to zoom')}
+      <div className="pointer-events-none absolute bottom-3 right-3 hidden max-w-[60%] rounded-full bg-white/90 px-3 py-1.5 text-right text-xs text-stone-600 backdrop-blur sm:block">
+        {sceneHint(t, touch, !!onSelect)}
       </div>
       {children}
     </div>
@@ -296,13 +321,23 @@ const LEGEND: { tone: Tone; label: string }[] = [
 export function Legend({ tones = ['available', 'occupied', 'reserved', 'recommended'] }: { tones?: Tone[] }) {
   const { t } = useLang()
   return (
-    <div className="pointer-events-none absolute left-4 top-4 z-30 flex flex-wrap gap-x-4 gap-y-1 rounded-full border border-stone-200 bg-white/90 px-3.5 py-1.5 text-xs text-stone-600 shadow-soft backdrop-blur">
-      {LEGEND.filter((x) => tones.includes(x.tone)).map((x) => (
-        <span key={x.tone} className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full border border-black/10" style={{ background: TOP[x.tone] }} />
-          {t(x.label)}
-        </span>
-      ))}
+    <div className="pointer-events-none absolute left-3 right-3 top-3 z-30 flex flex-wrap gap-x-3 gap-y-1 sm:right-auto">
+      <ul className="flex flex-wrap gap-x-3 gap-y-1 rounded-2xl border border-stone-200 bg-white/95 px-3 py-1.5 text-xs text-stone-600 shadow-soft backdrop-blur">
+        {LEGEND.filter((x) => tones.includes(x.tone)).map((x) => {
+          const Icon = TONE_ICON[x.tone]
+          return (
+            <li key={x.tone} className="flex items-center gap-1.5">
+              <span
+                className={`flex h-3.5 w-3.5 items-center justify-center rounded-full border ${BADGE[x.tone]}`}
+                aria-hidden
+              >
+                {Icon && <Icon size={8} strokeWidth={3} />}
+              </span>
+              {t(x.label)}
+            </li>
+          )
+        })}
+      </ul>
     </div>
   )
 }

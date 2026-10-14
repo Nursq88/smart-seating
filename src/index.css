@@ -15,6 +15,20 @@
   ::selection {
     @apply bg-bronze-soft;
   }
+  /* A clear ring for keyboard users on every control; mouse clicks do not show it. */
+  :focus-visible {
+    outline: 2px solid theme('colors.ink');
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 @layer components {
@@ -25,6 +39,6 @@
     @apply text-[11px] font-medium uppercase tracking-[0.14em] text-stone-500;
   }
   .input {
-    @apply h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-ink outline-none transition placeholder:text-stone-400 focus:border-stone-400;
+    @apply h-10 w-full rounded-lg border border-stone-200 bg-white px-3 text-sm text-ink transition placeholder:text-stone-500 focus:border-ink focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink;
   }
 }

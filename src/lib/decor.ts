@@ -44,6 +44,24 @@ export function defaultDecor(purpose: Purpose): Decor {
   return fromPalette('sage', { flowers: 'wild', balloons: false, candles: true, petals: false })
 }
 
+/**
+ * Where a guest starts when they turn table styling on: the occasion's colours and nothing paid on top.
+ * Flowers and extras are only added when the guest picks them.
+ */
+export function startDecor(purpose: Purpose): Decor {
+  const { palette, cloth, accent, bloom } = defaultDecor(purpose)
+  return { palette, cloth, accent, bloom, flowers: 'none', balloons: false, candles: false, petals: false }
+}
+
+/** The occasion's usual set, offered as suggestions the guest can add one by one. */
+export function suggestions(purpose: Purpose): { flowers?: Flowers; extras: ExtraKey[] } {
+  const usual = defaultDecor(purpose)
+  return {
+    flowers: usual.flowers === 'none' ? undefined : usual.flowers,
+    extras: EXTRAS.map(([key]) => key).filter((key) => usual[key]),
+  }
+}
+
 /** Large pieces the guest can add or remove. */
 export const EXTRAS = [
   ['banner', 'Banner'],
@@ -54,6 +72,38 @@ export const EXTRAS = [
   ['candles', 'Candles'],
   ['petals', 'Petals'],
 ] as const
+
+export type ExtraKey = (typeof EXTRAS)[number][0]
+
+/**
+ * Prices in tenge. The restaurant has not published what table styling costs, so these are
+ * placeholders for the demo: every screen that shows them labels them as demo prices.
+ */
+export const DECOR_PRICES_ARE_DEMO = true
+
+const PRICE = {
+  base: 3000,
+  flowers: { roses: 9000, peonies: 12000, tulips: 7000, wild: 6000, none: 0 } as Record<Flowers, number>,
+  extras: { banner: 4000, balloons: 6000, cake: 15000, gifts: 5000, wine: 18000, candles: 2000, petals: 3000 } as Record<ExtraKey, number>,
+}
+
+export const BASE_STYLING = 'Tablecloth and napkins in your colours'
+
+export const flowerPrice = (flowers: Flowers) => PRICE.flowers[flowers]
+export const extraPrice = (key: ExtraKey) => PRICE.extras[key]
+export const basePrice = () => PRICE.base
+
+/** What the guest has chosen, one line per paid item, labels as translation keys. */
+export function decorLines(decor: Decor): { label: string; price: number }[] {
+  const lines = [{ label: BASE_STYLING, price: PRICE.base }]
+  if (decor.flowers !== 'none') lines.push({ label: FLOWERS.find((f) => f.id === decor.flowers)!.label, price: PRICE.flowers[decor.flowers] })
+  for (const [key, label] of EXTRAS) if (decor[key]) lines.push({ label, price: PRICE.extras[key] })
+  return lines
+}
+
+export function decorTotal(decor: Decor) {
+  return decorLines(decor).reduce((sum, line) => sum + line.price, 0)
+}
 
 export function paletteLabel(decor: Decor) {
   return PALETTES.find((p) => p.id === decor.palette)?.label ?? 'Custom colours'

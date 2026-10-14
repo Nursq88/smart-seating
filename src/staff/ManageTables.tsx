@@ -143,7 +143,7 @@ export function ManageTables({
             {existing && existing.status === 'available' && (
               <Button
                 variant="secondary"
-                aria-label="Remove table"
+                aria-label={t('Remove table')}
                 onClick={() => {
                   removeTable(existing.id)
                   setEditing(null)
@@ -154,7 +154,7 @@ export function ManageTables({
             )}
           </div>
           {existing && existing.status !== 'available' && (
-            <p className="mt-3 text-xs text-stone-400">{t('A table in use cannot be removed.')}</p>
+            <p className="mt-3 text-xs text-stone-500">{t('A table in use cannot be removed.')}</p>
           )}
         </div>
       ) : (
@@ -166,7 +166,7 @@ export function ManageTables({
               {t('Add table')}
             </Button>
           </div>
-          {!canAddTable && <p className="mt-2 text-xs text-stone-400">{t('The floor is full. Remove a table to add another.')}</p>}
+          {!canAddTable && <p className="mt-2 text-xs text-stone-500">{t('The floor is full. Remove a table to add another.')}</p>}
 
           <div className="mt-4 divide-y divide-stone-100 rounded-xl border border-stone-200">
             {[...tables]
